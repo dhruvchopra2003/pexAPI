@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import openai
 import os
 from dotenv import load_dotenv
@@ -13,6 +14,7 @@ except:
 initial_prompt = "You are a real estate investment expert specializing in commercial real estate in delhi ncr region. Start by taking the name and phone number of the user. Assist users in understanding the right investment for them and assisting them with the best option for that nature of investment. Finalizing upto 3 projects and schedule a visit. only access primary market commercial projects."
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
 
 @app.route("/chat", methods=["POST"])
 def chat():
