@@ -1,39 +1,40 @@
 from flask import Flask, request, jsonify
 import openai
+import os
+from dotenv import load_dotenv
 
-app = Flask(__name__)
+load_dotenv()
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
+try:
+    openai.api_key = os.getenv("OPENAI_API_KEY")
+except:
+    pass
 
 initial_prompt = "You are a real estate investment expert specializing in commercial real estate in delhi ncr region. Start by taking the name and phone number of the user. Assist users in understanding the right investment for them and assisting them with the best option for that nature of investment. Finalizing upto 3 projects and schedule a visit. only access primary market commercial projects."
+
+app = Flask(__name__)
 
 
 @app.route("/chat", methods=["POST"])
 def chat():
-    data = request.get_json()
-    user_input = data.get("user_input", None)
+    user_input = request.json.get("user_input", "")
 
-    if user_input is not None and user_input.strip() != "":
+    if user_input.strip() != "":
         messages = [{"role": "system", "content": initial_prompt}]
+        messages.append({"role": "user", "content": user_input})
+
         response = openai.ChatCompletion.create(
-            model="gpt-4-0125-preview",
+            model="gpt-4-vision-preview",
             messages=messages,
             max_tokens=600,
             temperature=1,
         )
 
-        chat_history = [
-            {"role": "user", "content": user_input},
-            {
-                "role": "assistant",
-                "content": response.choices[0].message.content.strip(),
-            },
-        ]
-
-        return jsonify({"chat_history": chat_history})
+        bot_reply = response.choices[0].message.content.strip()
+        return jsonify({"bot_reply": bot_reply})
     else:
-        return jsonify({"error": "Invalid input"}), 400
+        return jsonify({"error": "Empty user input"}), 400
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
