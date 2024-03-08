@@ -14,9 +14,6 @@ initial_prompt = "You are a real estate investment expert specializing in commer
 
 app = Flask(__name__)
 
-@app.route("/"):
-def hello_world():
-    return "Testing"
 @app.route("/chat", methods=["POST"])
 def chat():
     user_input = request.json.get("user_input", "")
