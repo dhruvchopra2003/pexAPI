@@ -1,130 +1,220 @@
-# from flask import Flask, request, jsonify
-# from flask_cors import CORS
+# import streamlit as st
 # import openai
+# import csv
 # import os
-# from dotenv import load_dotenv
+# # from dotenv import load_dotenv
+# # import schedule
 
-# load_dotenv()
-
+# # load_dotenv()
 # try:
 #     openai.api_key = os.getenv("OPENAI_API_KEY")
 # except:
-#     pass
+#     openai.api_key = st.secrets["OPENAI_API_KEY"]
 
-# initial_prompt = "You are a real estate investment expert specializing in commercial real estate in delhi ncr region. Start by taking the name and phone number of the user. Assist users in understanding the right investment for them and assisting them with the best option for that nature of investment. Finalizing upto 3 projects and schedule a visit. only access primary market commercial projects."
-
-# app = Flask(__name__)
-# CORS(app)  # Enable CORS for all routes
-
-# @app.route("/chat", methods=["POST"])
-# def chat():
-#     user_input = request.json.get("user_input", "")
-
-#     if user_input.strip() != "":
-#         messages = [{"role": "system", "content": initial_prompt}]
-#         messages.append({"role": "user", "content": user_input})
-
-#         response = openai.ChatCompletion.create(
-#             model="gpt-4-vision-preview",
-#             messages=messages,
-#             max_tokens=600,
-#             temperature=1,
-#         )
-
-#         bot_reply = response.choices[0].message.content.strip()
-#         return jsonify({"bot_reply": bot_reply})
-#     else:
-#         return jsonify({"error": "Empty user input"}), 400
+# st.title("PEX CHAT")
+# st.subheader("Chat with the collective brains of the top Real Estate experts of India!")
 
 
-# if __name__ == "__main__":
-#     app.run()
-
-# from flask import Flask, request, jsonify
-# from flask_cors import CORS
-# import openai
-# import os
-# from dotenv import load_dotenv
-
-# load_dotenv()
-
-# try:
-#     openai.api_key = os.getenv("OPENAI_API_KEY")
-# except Exception as e:
-#     print("Error setting OpenAI API key:", e)
-
-# initial_prompt = "You are a real estate investment expert specializing in commercial real estate in Delhi NCR region. Start by taking the name and phone number of the user. Assist users in understanding the right investment for them and assisting them with the best option for that nature of investment. Finalizing up to 3 projects and schedule a visit. Only access primary market commercial projects."
-
-# app = Flask(__name__)
-# CORS(app)  # Enable CORS for all routes
+# def get_custom_data(csv_file_path):
+#     custom_data = ""
+#     with open(csv_file_path, "r", newline="", encoding="utf-8") as file:
+#         csv_reader = csv.reader(file)
+#         for row in csv_reader:
+#             # Assuming each row contains text data, concatenate it to custom_data
+#             custom_data += " ".join(row) + "\n"
+#     return custom_data
 
 
-# @app.route("/chat", methods=["POST"])
-# def chat():
-#     try:
-#         messages = [request.json]
-#         if not messages:
-#             messages = [{"role": "system", "content": initial_prompt}]
+# # openai.api_key = st.secrets['OPENAI_API_KEY']
+
+# file_paths = [
+#     "./data/NCRProjects.csv",
+#     "./data/pex_sheetNoida.csv",
+#     "./data/pex_sheetGgn.csv",
+# ]
+
+# # Read content from the CSV file
+# custom_data = ""
+# for file in file_paths:
+#     custom_data += get_custom_data(file)
+
+# initial_prompt = (
+#     "You are PexBot, a real estate expert dealing in ONLY commercial properties in the Delhi NCR"
+#     f"Get your listings and projects data from {custom_data}, use your own data for any more information"
+#     "Begin by introducing yourself, and then ask for the following information from me ONE QUESTION FOR ONE PIECE of info: Phone number, Place of Preference, type of property, investment metrics. Be subtle how you ask about this information and explain why you need each one. Ask me one question at a time. "
+#     "After getting these answers, give a small summary of the requirements, and ask if you should proceed"
+#     "If yes, follow this format: Project Name, the image, the builder, a paragraph (including it's features, something about the builder, and some more information (use 30 words)). Describe each listing smartly and humanly"
+#     "Give differences and comparisons as tables"
+#     "ALWAYS GIVE images with every listing, NEVER GIVE IMAGE LINKS"
+#     "Cleverly mention the pricing of each property as one of these: [65lacs, 75lacs, 1.25cr, 1.37cr, 2,6cr, 3.3cr]"
+#     "Once I am interested in any project, give me more details about it, include the numbers and give analysis, but do not give any information with value NA"
+#     "Urge the me to select some of the options"
+#     "Once I seem interested in a property, confirm my phone numbers (check it should be exactly 10 digits) and how and when I wish to be contacted"
+# )
+
+# if "chat_history" not in st.session_state:
+#     st.session_state["chat_history"] = []
+
+
+# # Function to display chat history
+# def display_chat_history(chat_history):
+#     # st.subheader("Chat History")
+#     for role, text in chat_history:
+#         if role == "assistant":
+#             st.write(f"PexBot:\n {text}")
 #         else:
-#             messages.insert(0, {"role": "system", "content": initial_prompt})
-
-#         response = openai.ChatCompletion.create(
-#             model="text-davinci-003",
-#             messages=messages,
-#             max_tokens=150,
-#             temperature=0.7,
-#         )
-
-#         bot_reply = response.choices[0].message["content"].strip()
-#         return jsonify({"bot_reply": bot_reply})
-
-#     except Exception as e:
-#         return jsonify({"error": str(e)}), 500
+#             st.write(f"You:\n {text}")
 
 
-# if __name__ == "__main__":
-#     app.run(debug=True)
+# st.markdown(
+#     """
+#     <style>
+#     img {
+#         width: 350px;
+#         height: 200px
+#     }
+#     </style>
+#     """,
+#     unsafe_allow_html=True,
+# )
 
-from flask import Flask, request, jsonify
-from flask_cors import CORS
+# user_input = st.chat_input("Suggest the best properties in Gurgaon")
+
+# # First convo by the bot
+# bot_message = "Hi there, I'm PexBot, the one stop solution to all your real estate related queries! So what are you looking for?"
+
+
+# st.write(f"PexBot: {bot_message}")
+
+
+# messages = []
+
+
+# if user_input != None and user_input.strip() != "":
+#     input_message = ("user", user_input)  # Set role to 'user' for user input
+#     user_input = ""
+#     st.session_state["chat_history"].append(input_message)
+
+#     messages = [
+#         {"role": role, "content": text}
+#         for role, text in st.session_state["chat_history"]
+#     ]
+#     messages.insert(0, {"role": "system", "content": initial_prompt})
+
+#     response = openai.ChatCompletion.create(
+#         model="gpt-3.5-turbo", messages=messages, max_tokens=600, temperature=1
+#     )
+
+#     chatgpt_reply = response.choices[0].message.content.strip()
+#     bot_message = ("assistant", chatgpt_reply)  # Set role to 'assistant' for bot reply
+#     st.session_state["chat_history"].append(bot_message)
+#     display_chat_history(st.session_state["chat_history"])
+
+
+import streamlit as st
 import openai
+import csv
 import os
-from dotenv import load_dotenv
 
-load_dotenv()
+#from dotenv import load_dotenv
 
+# import schedule
+
+#load_dotenv()
 try:
     openai.api_key = os.getenv("OPENAI_API_KEY")
-except Exception as e:
-    print("Error setting OpenAI API key:", e)
+except:
+    openai.api_key = st.secrets["OPENAI_API_KEY"]
 
-initial_prompt = "You are a real estate investment expert specializing in commercial real estate in Delhi NCR region. Start by taking the name and phone number of the user. Assist users in understanding the right investment for them and assisting them with the best option for that nature of investment. Finalizing up to 3 projects and schedule a visit. Only access primary market commercial projects."
-
-app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
+st.title("PEX CHAT")
+st.subheader("Chat with the collective brains of the top Real Estate experts of India!")
 
 
-@app.route("/chat", methods=["POST"])
-def chat():
-    try:
-        chat_history = request.json["chat_history"]
-        messages = [chat for chat in chat_history]
-        print(chat_history)
-        print(messages)
-
-        response = openai.ChatCompletion.create(
-            model="gpt-4-vision-preview",
-            messages=messages,
-            max_tokens=600,
-            temperature=1,
-        )
-
-        bot_reply = response.choices[0].message["content"].strip()
-        return jsonify({"bot_reply": bot_reply})
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+def get_custom_data(csv_file_path):
+    custom_data = ""
+    with open(csv_file_path, "r", newline="", encoding="utf-8") as file:
+        csv_reader = csv.reader(file)
+        for row in csv_reader:
+            # Assuming each row contains text data, concatenate it to custom_data
+            custom_data += " ".join(row) + "\n"
+    return custom_data
 
 
-if __name__ == "__main__":
-    app.run(debug=True)
+# openai.api_key = st.secrets['OPENAI_API_KEY']
+
+# file_paths = [
+#     "./data/NCRProjects.csv",
+#     "./data/pex_sheetNoida.csv",
+#     "./data/pex_sheetGgn.csv",
+# ]
+
+# # Read content from the CSV file
+# custom_data = ""
+# for file in file_paths:
+#     custom_data += get_custom_data(file)
+
+# initial_prompt = f"You are a real estate investment expert specializing in commercial real estate in delhi ncr region. Start by taking the name and phone number of the user. Assist users in understanding the right investment for them and assisting them with the best option for that nature of investment. Finalizing upto 3 projects and schedule a visit. only access primary market commercial projects." 
+# "You can also use {custom_data} for your answers"
+initial_prompt = f"You are a real estate investment expert specializing in both commercial and resident real estate in Delhi NCR region. Start by taking the name and phone number of the user. Assist users in understanding the right investment for them and assisting them with the best option for that nature of investment (For residential preferences, also consider number of family members). Finalizing upto 3 projects and schedule a visit. Only access primary market projects. Don't ask all questions in one go."
+
+if "chat_history" not in st.session_state:
+    st.session_state["chat_history"] = []
+
+
+# Function to display chat history
+def display_chat_history(chat_history):
+    # st.subheader("Chat History")
+    for role, text in chat_history:
+        if role == "assistant":
+            st.write(f"PexBot:\n {text}")
+        else:
+            st.write(f"You:\n {text}")
+
+
+st.markdown(
+    """
+    <style>
+    img {
+        width: 350px;
+        height: 200px
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+user_input = st.chat_input("Suggest the best properties in Gurgaon")
+
+# First convo by the bot
+bot_message = "Hi there, I'm PexBot, the one stop solution to all your real estate related queries! So what are you looking for?"
+
+
+st.write(f"PexBot: {bot_message}")
+
+
+messages = []
+
+
+if user_input != None and user_input.strip() != "":
+    input_message = ("user", user_input)  # Set role to 'user' for user input
+    user_input = ""
+    st.session_state["chat_history"].append(input_message)
+
+    messages = [
+        {"role": role, "content": text}
+        for role, text in st.session_state["chat_history"]
+    ]
+    messages.insert(0, {"role": "system", "content": initial_prompt})
+
+    response = openai.ChatCompletion.create(
+        model="gpt-4-vision-preview",
+        messages=messages,
+        max_tokens=600,
+        temperature=1,
+        # model="gpt-3.5-turbo", messages=messages, max_tokens=600, temperature=1
+    )
+
+    chatgpt_reply = response.choices[0].message.content.strip()
+    bot_message = ("assistant", chatgpt_reply)  # Set role to 'assistant' for bot reply
+    st.session_state["chat_history"].append(bot_message)
+    display_chat_history(st.session_state["chat_history"])
